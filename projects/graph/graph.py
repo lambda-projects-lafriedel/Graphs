@@ -89,17 +89,16 @@ class Graph:
         
         visited = set()
 
-        def dft_inner(self, passed_vertex, visited):
+        def dft_inner(passed_vertex):
             print(passed_vertex)
-
+            nonlocal visited
+            visited.add(passed_vertex)
             for node in self.vertices[passed_vertex]:
                 if node not in visited:
-                    visited.add(node)
-                    passed_vertex = node
-                    return dft_inner(self, passed_vertex, visited)
+                    dft_inner(node)
                 
         
-        return dft_inner(self, starting_vertex, visited)
+        dft_inner(starting_vertex)
         
                 
     def bfs(self, starting_vertex, destination_vertex):
