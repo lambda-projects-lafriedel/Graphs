@@ -77,8 +77,31 @@ class Graph:
         Print each vertex in depth-first order
         beginning from starting_vertex.
         This should be done using recursion.
+
+        create set for visited
+        print v
+
+        get keys of that vertex
+        loop over values in key of self.vertices
+        if that key is not in visited,
+        call func on that value and pass in the visited set
         """
-        pass  # TODO
+        
+        visited = set()
+
+        def dft_inner(self, passed_vertex, visited):
+            print(passed_vertex)
+
+            for node in self.vertices[passed_vertex]:
+                if node not in visited:
+                    visited.add(node)
+                    passed_vertex = node
+                    return dft_inner(self, passed_vertex, visited)
+                
+        
+        return dft_inner(self, starting_vertex, visited)
+        
+                
     def bfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing the shortest path from
@@ -132,7 +155,7 @@ if __name__ == '__main__':
         1, 2, 4, 7, 6, 3, 5
         1, 2, 4, 6, 3, 5, 7
     '''
-    graph.dft(1)
+    # graph.dft(1)
 
     '''
     Valid BFT paths:
@@ -149,7 +172,7 @@ if __name__ == '__main__':
         1, 2, 4, 3, 7, 6, 5
         1, 2, 4, 3, 7, 5, 6
     '''
-    graph.bft(1)
+    # graph.bft(1)
 
     '''
     Valid DFT recursive paths:
