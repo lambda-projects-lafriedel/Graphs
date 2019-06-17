@@ -16,6 +16,7 @@ class Graph:
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
+        ---
         If vs exist in self.vertices, add second value as a value to the first, which is a key
         Else, return "Vertex not in graph"
         """
@@ -28,6 +29,7 @@ class Graph:
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
+        ---
         Create an empty set to store visited nodes
         Create an empty Queue and enqueue the starting vertex
         While the queue is not empty
@@ -51,8 +53,25 @@ class Graph:
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
+        ---
+        Create an empty set to store visited nodes
+        Create an empty Stack and push the starting vertex
+        While the stack is not empty
+        Pop the first vertex
+        If that vertex has not been visited, mark it as visited then add its neighbors to the top of the stack
         """
-        pass  # TODO
+        visited = set()
+        s = Stack()
+        s.push(starting_vertex)
+
+        while s.size() > 0:
+            v = s.pop()
+            if v not in visited:
+                visited.add(v)
+                print(v)
+                for neighbor in self.vertices[v]:
+                    s.push(neighbor)
+        
     def dft_recursive(self, starting_vertex):
         """
         Print each vertex in depth-first order
