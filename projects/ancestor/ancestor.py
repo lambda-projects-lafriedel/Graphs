@@ -24,7 +24,7 @@ def earliest_ancestor(data, v_id):
     print(adj_list)
     # Could perform DFS without saving the visited nodes, and push the path to a list of list of paths.
     # Or a single list that gets replaced if the first item has a lower value
-
+  
     # Create a stack
     stack = []
     # Create a list to store longest path
@@ -39,7 +39,8 @@ def earliest_ancestor(data, v_id):
             path = stack.pop()
             # grab the last node of the path
             last = path[-1]
-
+            print("LEN OF PATH", len(path), path)
+            print("LAST", last)
             if last == v_id:
                 if len(path) >= len(longest_path):
                     longest_path.append(path)
@@ -56,10 +57,13 @@ def earliest_ancestor(data, v_id):
                     stack.append(path_copy)
                     # if neighbor == v_id
                     # if the length of the path copy is greater than or equal to length of the currently stored path, replace it unless the first index is lower
+    print("LONGEST PATH", longest_path)
 
-    path_list = sorted(longest_path,key=len,reverse=True)
-
-    return path_list[0][0]
+    if len(longest_path) == 1:
+        return -1
+    else:
+        path_list = sorted(longest_path,key=len,reverse=True)
+        return path_list[0][0]
     # return earliest known ancestor (v_id)
 
 dataset = [(1,3),(2,3),(3,6),(5,6),(5,7),(4,5),(4,8),(8,9),(11,8),(10,1)]
