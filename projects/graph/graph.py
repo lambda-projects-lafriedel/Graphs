@@ -77,14 +77,6 @@ class Graph:
         Print each vertex in depth-first order
         beginning from starting_vertex.
         This should be done using recursion.
-
-        create set for visited
-        print v
-
-        get keys of that vertex
-        loop over values in key of self.vertices
-        if that key is not in visited,
-        call func on that value and pass in the visited set
         """
         
         visited = set()
@@ -105,9 +97,46 @@ class Graph:
         """
         Return a list containing the shortest path from
         starting_vertex to destination_vertex in
-        breath-first order.
+        breadth-first order.
+        ---
+        Edge case:
+        If starting_v == destination_v, return list of that v
+
+        Create an empty set to store visited nodes
+        create empty list to contain paths
+        Create new Queue
+        enqueue starting_vertex
+
+        while queue size is greater than 0
+        dequeue the first path
+        grab the last node from the path
+        if v not in visited
+        for neighbor in self.vertices[v]
+        create a new list from the path, add neighbor to the list, and add this list to the queue
+        return path if neighbor == goal 
         """
-        pass  # TODO
+        if starting_vertex == destination_vertex:
+            return [starting_vertex]
+
+        visited = set()
+        q = Queue()
+        q.enqueue([starting_vertex])
+
+        while q.size() > 0:
+            path = q.dequeue()
+            print("PATH", path)
+            last_node = path[-1]
+            print("LAST NODE", last_node)
+            if last_node not in visited:
+                visited.add(last_node)
+                for neighbor in self.vertices[last_node]:
+                    new_path = list(path)
+                    new_path.append(neighbor)
+                    q.enqueue(new_path)
+
+                    if neighbor == destination_vertex:
+                        return new_path
+
     def dfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing a path from
@@ -154,7 +183,7 @@ if __name__ == '__main__':
         1, 2, 4, 7, 6, 3, 5
         1, 2, 4, 6, 3, 5, 7
     '''
-    # graph.dft(1)
+    graph.dft(1)
 
     '''
     Valid BFT paths:
@@ -171,7 +200,7 @@ if __name__ == '__main__':
         1, 2, 4, 3, 7, 6, 5
         1, 2, 4, 3, 7, 5, 6
     '''
-    # graph.bft(1)
+    graph.bft(1)
 
     '''
     Valid DFT recursive paths:
