@@ -6,9 +6,10 @@
 
 # This is a sparse acyclic directed graph
 # Not looking for the shortest path, so likely not a breadth-first anything
+# Could perform DFS without saving the visited nodes, and push the path to a list of list of paths.
+# Or a single list that gets replaced if the first item has a lower value
 
 def earliest_ancestor(data, v_id):
-    pass
     # Store data in a dictionary to create an adjacency list
     adj_list = {}
 
@@ -21,14 +22,11 @@ def earliest_ancestor(data, v_id):
         # else, add the value to the set
         else:
           adj_list[pair[0]].add(pair[1])
-    print(adj_list)
-    # Could perform DFS without saving the visited nodes, and push the path to a list of list of paths.
-    # Or a single list that gets replaced if the first item has a lower value
   
     # Create a stack
     stack = []
     # Create a list to store longest path
-    longest_path = []
+    possible_paths = []
     # Loop over the keys in the dict
     for starting_vertex in adj_list:
         # push the key into the stack
@@ -39,12 +37,16 @@ def earliest_ancestor(data, v_id):
             path = stack.pop()
             # grab the last node of the path
             last = path[-1]
-            print("LEN OF PATH", len(path), path)
-            print("LAST", last)
+            
+            # if last value in path is equal to the vertex id
             if last == v_id:
-                if len(path) >= len(longest_path):
-                    longest_path.append(path)
+                # if the length of the path is greater/equal to length of possible_paths
+                if len(path) >= len(possible_paths):
+                    # add path to list of possible paths
+                    possible_paths.append(path)
+            # if last value is not a key in the adj_list
             elif last not in adj_list:
+                # continue with loop
                 continue
             else:
                 # for neighbors in adj_list[key]
@@ -55,16 +57,16 @@ def earliest_ancestor(data, v_id):
                     path_copy.append(neighbor)
                     # push the path to the stack
                     stack.append(path_copy)
-                    # if neighbor == v_id
-                    # if the length of the path copy is greater than or equal to length of the currently stored path, replace it unless the first index is lower
-    print("LONGEST PATH", longest_path)
-
-    if len(longest_path) == 1:
+              
+    # if possible_paths only has one path and the length is 1 (meaning, the vertex doesn't have any ancestors)
+    if len(possible_paths) == 1 and len(possible_paths[0]) == 1:
         return -1
     else:
-        path_list = sorted(longest_path,key=len,reverse=True)
+        # sort the list of possible paths from longest to shortest
+        path_list = sorted(possible_paths,key=len,reverse=True)
+        # return the first value of the longest path, which ends up being the earliest ancestor
         return path_list[0][0]
-    # return earliest known ancestor (v_id)
+
 
 dataset = [(1,3),(2,3),(3,6),(5,6),(5,7),(4,5),(4,8),(8,9),(11,8),(10,1)]
 value = 6
