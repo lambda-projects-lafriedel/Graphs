@@ -1,4 +1,4 @@
-
+import random
 
 class User:
     def __init__(self, name):
@@ -7,7 +7,9 @@ class User:
 class SocialGraph:
     def __init__(self):
         self.lastID = 0
+        # self.users is a dict where keys are the userIDs and value is a User class instance that is fed the user's name
         self.users = {}
+        # self.friendships is a dict where keys are the userIDs and the value is a set of IDs that user is friends with
         self.friendships = {}
 
     def addFriendship(self, userID, friendID):
@@ -45,10 +47,33 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
         # !!!! IMPLEMENT ME
-
         # Add users
-
+        #for i in range numUsers, call addUser and implement a random name
+        # add their ID to a list, for building friendhips
+        possible_friends = []
+        for i in range(1, numUsers + 1):
+            self.addUser("Bob")
+            possible_friends.append(i)
+        
         # Create friendships
+        for i in range(1,numUsers+1):
+            # Use shuffle to shuffle the list of possible friends for each user
+            random.shuffle(possible_friends)
+            # Generate a random number between 0 and avgFriendships
+            num = random.randint(0,avgFriendships*2)
+            # Use random number to grab that many number of shuffled userIDs from possible_friends as long as userId < friendID
+            friends = possible_friends[:num]
+            print("FRIENDS", friends)
+            for friend in friends:
+                print("FRIEND",friend)
+                print("I", i)
+                print(f'\n')
+                if friend <= i:
+                    continue
+                else:
+                    self.addFriendship(i,friend)
+
+
 
     def getAllSocialPaths(self, userID):
         """
