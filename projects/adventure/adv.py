@@ -63,8 +63,29 @@ def get_unexplored_direction(room):
     else:
         return None
 
+def get_opposite(direction):
+    dirdict = {'n':'s', 's':'n', 'w':'e', 'e':'w'}
+    return dirdict.get(direction)
+
 def dfs_until_dead_end(room):
-    pass
+    # don't use a stack
+    s = []
+    s.push(room.id)
+    # keep track of previous room and current room
+    prev_room = room.id
+    new_room = None
+    # while the size of the list is greater than 0
+    while len(s) > 0:
+        # get the room id by popping value off
+        # if room isn't in graph, call popgraphwexits
+        # call getunexdir to get a random direction
+        # if getunexdir is not None, travel in that direction
+            # update prev room as old room's id
+            # update new room as new room's id
+            # update graph key with the id of new room
+            # grab opposite direction with getopp and update the graph as well
+            # add new room's id to the stack
+        # else return room with no unexplored exits/dead end room
 
 def bfs_until_room_with_unexplored_exit():
     pass
@@ -85,8 +106,7 @@ visited_rooms = set()
 player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
 
-populate_graph_with_exits(player.currentRoom)
-print(get_unexplored_direction(player.currentRoom))
+print(get_opposite('w'))
 
 for move in traversalPath:
     player.travel(move)
