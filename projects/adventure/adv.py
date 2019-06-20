@@ -53,7 +53,17 @@ def populate_graph_with_exits(room):
     for direction in exits:
         graph[room.id][direction] = '?'
 
-def dfs_until_dead_end():
+def get_unexplored_direction(room):
+    to_explore = []
+    for direction, explored in graph[room.id].items():
+        if explored == '?':
+            to_explore.append(direction)
+    if len(to_explore) > 0:
+        return to_explore[0]
+    else:
+        return None
+
+def dfs_until_dead_end(room):
     pass
 
 def bfs_until_room_with_unexplored_exit():
@@ -76,7 +86,7 @@ player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
 
 populate_graph_with_exits(player.currentRoom)
-print("GRAPH", graph)
+print(get_unexplored_direction(player.currentRoom))
 
 for move in traversalPath:
     player.travel(move)
