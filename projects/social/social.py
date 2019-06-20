@@ -18,11 +18,14 @@ class SocialGraph:
         """
         if userID == friendID:
             print("WARNING: You cannot be friends with yourself")
+            return False
         elif friendID in self.friendships[userID] or userID in self.friendships[friendID]:
             print("WARNING: Friendship already exists")
+            return False
         else:
             self.friendships[userID].add(friendID)
             self.friendships[friendID].add(userID)
+            return True
 
     def addUser(self, name):
         """
@@ -41,6 +44,9 @@ class SocialGraph:
         between those users.
 
         The number of users must be greater than the average number of friendships.
+        hint: average_friendships_per_user = total_friendships / total_users
+        so
+        total_friendships = average_friendships_per_user * total_users
         """
         # Reset graph
         self.lastID = 0
@@ -50,30 +56,33 @@ class SocialGraph:
         # Add users
         #for i in range numUsers, call addUser and implement a random name
         # add their ID to a list, for building friendhips
-        possible_friends = []
         for i in range(1, numUsers + 1):
-            self.addUser("Bob")
-            possible_friends.append(i)
-        
+            self.addUser("Bob")        
         # Create friendships
-        for i in range(1,numUsers+1):
-            # Use shuffle to shuffle the list of possible friends for each user
-            random.shuffle(possible_friends)
-            # Generate a random number between 0 and avgFriendships
-            num = random.randint(0,avgFriendships*2)
-            # Use random number to grab that many number of shuffled userIDs from possible_friends as long as userId < friendID
-            friends = possible_friends[:num]
-            print("FRIENDS", friends)
-            for friend in friends:
-                print("FRIEND",friend)
-                print("I", i)
-                print(f'\n')
-                if friend <= i:
-                    continue
-                else:
-                    self.addFriendship(i,friend)
+        possible_friends = []
 
+        total_friendships = numUsers * avgFriendships
+        num_friendships = 0
+        while num_friendships < total_friendships:
+            userID = random.randint(1, self.lastID)
+            friendID = random.randint(1, self.lastID)
+            if self.addFriendship(userID, friendID):
+                num_friendships += 2
+        '''  
+        for userID in self.users:
+            for friendID in range(userID + 1, self.lastID + 1):
+                possible_friends.append((userID, friendID))
 
+        print(possible_friends)
+        num_friendships = (numUsers * avgFriendships) // 2
+        random.shuffle(possible_friends)
+        friendships_to_create = possible_friends[:num_friendships]
+        # or could use   friendships_to_create = random.sample(possibleFriendships, (numUsers * avgFriendships) // 2)
+
+        for friendship in friendships_to_create:
+            self.addFriendship(friendship[0], friendship[1])
+
+            '''
 
     def getAllSocialPaths(self, userID):
         """
