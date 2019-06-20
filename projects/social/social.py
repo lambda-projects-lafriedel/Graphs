@@ -1,4 +1,4 @@
-
+import random
 
 class User:
     def __init__(self, name):
@@ -7,7 +7,9 @@ class User:
 class SocialGraph:
     def __init__(self):
         self.lastID = 0
+        # self.users is a dict where keys are the userIDs and value is a User class instance that is fed the user's name
         self.users = {}
+        # self.friendships is a dict where keys are the userIDs and the value is a set of IDs that user is friends with
         self.friendships = {}
 
     def addFriendship(self, userID, friendID):
@@ -45,10 +47,33 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
         # !!!! IMPLEMENT ME
-
         # Add users
-
+        #for i in range numUsers, call addUser and implement a random name
+        # add their ID to a list, for building friendhips
+        possible_friends = []
+        for i in range(1, numUsers + 1):
+            self.addUser("Bob")
+            possible_friends.append(i)
+        
         # Create friendships
+        for i in range(1,numUsers+1):
+            # Use shuffle to shuffle the list of possible friends for each user
+            random.shuffle(possible_friends)
+            # Generate a random number between 0 and avgFriendships
+            num = random.randint(0,avgFriendships*2)
+            # Use random number to grab that many number of shuffled userIDs from possible_friends as long as userId < friendID
+            friends = possible_friends[:num]
+            print("FRIENDS", friends)
+            for friend in friends:
+                print("FRIEND",friend)
+                print("I", i)
+                print(f'\n')
+                if friend <= i:
+                    continue
+                else:
+                    self.addFriendship(i,friend)
+
+
 
     def getAllSocialPaths(self, userID):
         """
@@ -59,8 +84,35 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        visited = {}
+        # use a queue
+        q = []
+        q.append([userID])
+        # add userID as its own key and value to visited
+        visited[userID] = [userID]
+
+        while len(q) > 0:
+            path = q.pop(0)
+            curr_friend = path[-1]
+
+            # for all the userID keys inside self.friendships
+            for friend in self.friendships[curr_friend]:
+                # add neighbor as a key, if not visited, in visited with an empty list as value
+                if friend not in visited:
+                    visited[friend] = list()
+                # break out of loop if already in visited
+                else: 
+                    continue
+                
+                # create a new list that holds the path from userID to friend
+                friend_path = list(path)
+                # add the friend onto the end of the list
+                friend_path.append(friend)
+                # also add path to the queue
+                q.append(friend_path) 
+                # add path as the value to the friend
+                visited[friend].extend(friend_path)
+                
         return visited
 
 
