@@ -81,12 +81,16 @@ def dfs_until_dead_end(room):
         # if room isn't in graph, call popgraphwexits
         if current not in graph:
             populate_graph_with_exits(curr_room)
+            # mark that the room is visited
+            visited_rooms.add(curr_room)
         # call getunexdir to get a random direction
         direction = get_unexplored_direction(curr_room)
         # if getunexdir is not None
         if direction is not None:
             # travel in that direction
             player.travel(direction)
+            # add direction to traversalGraph
+            traversalPath.append(direction)
             # update prevroomID as old room's id
             prev_roomID = current
             # update currroomID as new room's id
@@ -98,6 +102,8 @@ def dfs_until_dead_end(room):
             if curr_roomID not in graph:
                 # popgraphwexits
                 populate_graph_with_exits(curr_room)
+                # mark that the room is visited
+                visited_rooms.add(curr_room)
             # grab opposite direction with getopp and update the graph as well
             opposite = get_opposite(direction)
             graph[curr_roomID][opposite] = prev_roomID
@@ -108,18 +114,77 @@ def dfs_until_dead_end(room):
             return curr_room
 
 def bfs_until_room_with_unexplored_exit(room):
-    pass
+    # create a visited storage
+    # need to store the visited room ids, and maybe the directions?
+    path_away = set() #{2,1}
+    # create queue
+    q = [] # [[2]] /[[2,1]] / [[2,1,0]]
+    # add current room's id to queue
+    q.append([room.id])
+    print("Q", q)
+    
+    curr_room = room # room 2 / room 1 / room 0
 
-
-'''
-Notes:
-Helpful commands:
-player.currentRoom.id
-player.currentRoom.getExits()
-player.travel(direction)
-So I'm going to write a traversal algorithm that will push directions to traversalPath, and I want to get traversalPath to be the same length as the length of visited rooms
-'''
-
+    # while queue length is > 0
+    while len(q) > 0:
+        #print("Q", q)
+        #print("CURR_ROOM", curr_room)
+        unexplored = get_unexplored_direction(curr_room)
+        print("UNEXPLORED 1", unexplored) # 2: None / 1: None / 0: ['s]
+        # curr_roomID = q.pop(0)
+        # print("CURR ID", curr_roomID)
+        if unexplored is None:
+            # dequeue the id
+            curr_path = q.pop(0) # [2,1]
+            last_visited = curr_path[-1] # 1
+            if last_visited not in path_away: #2: true / 1: true
+                # add room to visited rooms
+                path_away.add(last_visited)
+                for direction, roomID in graph[last_visited].items(): # s, 1 / # n, 2 <-- in visited; s, 0
+                    if roomID not in path_away:
+                        player.travel(direction)
+                        traversalPath.append(direction) # [n,n,s,s]
+                        curr_room = player.currentRoom
+                        add_dest = list(curr_path)
+                        add_dest.append(roomID) # [2,1, 0]
+                        q.append(add_dest)
+                    else:
+                        continue
+        else:
+            return curr_room
+                        
+            # for the directions inside the graph of the curr room's id
+            # check if each one is in visited
+            # if not, travel that way
+            # get travel directions of the room ID
+                # get room's exits
+                #direction = curr_room.getExits() # 2: [s] /
+                #print("DIRECTION", direction)
+                # travel in that direction
+                #player.travel(direction[0]) # 2 travel s
+                #print("NEW CURR ROOM", player.currentRoom)
+                # add direction to traversalPath
+                # q.append(player.currentRoom.id)
+                # print("NEW Q", q)
+                #curr_room = player.currentRoom
+                #unexplored = get_unexplored_direction(curr_room)
+                #print("UNEXPLORED 2", unexplored)
+            #     # check to see if room has unexplored exits
+            #     #unexplored = get_unexplored_direction(curr_room)
+                # if None
+                #if unexplored is None:
+                    # add id of room just traveled to to queue
+                    #q.append(player.currentRoom.id)
+                    #print("NEW Q", q)
+            #         #curr_room = player.currentRoom
+            #     # else
+            #     #else:
+            #         # call dfs
+            #         #return player.currentRoom
+            # else:
+            #     break
+    
+    #return curr_room
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -127,8 +192,11 @@ player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
 
 aroom = dfs_until_dead_end(player.currentRoom)
-print("ROOM ID", aroom.id)
+exroom = bfs_until_room_with_unexplored_exit(aroom)
+print("DEAD END ID", aroom.id)
+print("BOBBY FLAY", exroom)
 print("GRAPH", graph)
+print("TRAV PATH", traversalPath)
 
 for move in traversalPath:
     player.travel(move)
