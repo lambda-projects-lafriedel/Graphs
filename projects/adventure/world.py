@@ -5,25 +5,40 @@ import math
 class World:
     def __init__(self):
         self.startingRoom = None
-        self.rooms = {}
+        self.rooms = {} # {Room("Room 0", "(3, 5)"", 0, 3, 5), Room("Room 1", "(3, 6)", 1, 3, 6), Room("Room 2", "(3, 7)", 2, 3, 7)}
         self.roomGrid = []
-        self.gridSize = 0
+        self.gridSize = 0 # 8
     def loadGraph(self, roomGraph):
-        numRooms = len(roomGraph)
-        rooms = [None] * numRooms
+        # {0: [(3, 5), {'n': 1}], 
+        # 1: [(3, 6), {'s': 0, 'n': 2}], 
+        # 2: [(3, 7), {'s': 1}]}
+        numRooms = len(roomGraph) # 3
+        rooms = [None] * numRooms # [None, None, None]
         gridSize = 1
         for i in range(0, numRooms):
-            x = roomGraph[i][0][0]
+            x = roomGraph[i][0][0] # 3 // 3 // 3
             gridSize = max(gridSize, roomGraph[i][0][0], roomGraph[i][0][1])
+            # gridSize = max(1, 3, 5) = 5
+            # gridSoze = max(5, 3, 6) = 6
+            # gridSize = max(6, 3, 7) = 7
             self.rooms[i] = Room(f"Room {i}", f"({roomGraph[i][0][0]},{roomGraph[i][0][1]})",i, roomGraph[i][0][0], roomGraph[i][0][1])
+            # self.rooms[0] = Room("Room 0", "(3, 5)"", 0, 3, 5)
+            # self.rooms[1] = Room("Room 1", "(3, 6)", 1, 3, 6)
+            # self.rooms[2] = Room("Room 2", "(3, 7)", 2, 3, 7)
+            # Room(name, description, id, x, y)
         self.roomGrid = []
         gridSize += 1
+        # gridSize = 8
         self.gridSize = gridSize
         for i in range(0, gridSize):
             self.roomGrid.append([None] * gridSize)
+            # self.roomGrod = [None, None, None, None, None, None, None, None]
+        # for key of room graph
         for roomID in roomGraph:
             room = self.rooms[roomID]
+            # room = Room("Room 0", "(3, 5)"", 0, 3, 5)
             self.roomGrid[room.x][room.y] = room
+            # self.roomGrid[3][5] = Room("Room 0", "(3, 5)"", 0, 3, 5)
             if 'n' in roomGraph[roomID][1]:
                 self.rooms[roomID].connectRooms('n', self.rooms[roomGraph[roomID][1]['n']])
             if 's' in roomGraph[roomID][1]:
